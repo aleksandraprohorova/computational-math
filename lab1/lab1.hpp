@@ -4,7 +4,7 @@
 #include <iosfwd>
 #include <vector>
 
-#define CUSTOM_EPSILON 1e-17
+#define CUSTOM_EPSILON 1e-7
 
 struct point_t
 {
