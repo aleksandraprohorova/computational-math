@@ -1,6 +1,6 @@
 syms x1 x2 x3 p4 p6
 %double p1 p2 p3 p5
-
+intmax('uint64')
 p1 = 8.4e-6;
 p2 = 6.6667e-4;
 p3 = 1.7778e-5;
