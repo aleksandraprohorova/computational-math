@@ -21,17 +21,17 @@ fid = fopen('check.txt', 'r');
 fres = fopen('check_res.txt', 'w');
 
 while ~feof(fid)
-    i = fscanf(fid, "%f", 1);
+    i = fscanf(fid, "%e", 1);
     
-    x11 = fscanf(fid, "%f", 1);
-    x21 = fscanf(fid, "%f", 1);
-    x31 = fscanf(fid, "%f", 1);
-    p61 = fscanf(fid, "%f", 1);
+    x11 = fscanf(fid, "%e", 1);
+    x21 = fscanf(fid, "%e", 1);
+    x31 = fscanf(fid, "%e", 1);
+    p61 = fscanf(fid, "%e", 1);
     
-    x12 = fscanf(fid, "%f", 1);
-    x22 = fscanf(fid, "%f", 1);
-    x32 = fscanf(fid, "%f", 1);
-    p62 = fscanf(fid, "%f", 1);
+    x12 = fscanf(fid, "%e", 1);
+    x22 = fscanf(fid, "%e", 1);
+    x32 = fscanf(fid, "%e", 1);
+    p62 = fscanf(fid, "%e", 1);
     %fscanf(fid, '%f %f %f %f\n', x11, x21, x31, p61);
     %fscanf(fid, '%f %f %f %f\n', x12, x22, x32, p62);
     check1 = subs(res, p4, i);
@@ -54,4 +54,5 @@ end
 
 fclose(fid);
 fclose(fres);
+
 

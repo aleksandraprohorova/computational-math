@@ -1,6 +1,11 @@
-syms x1 x2 x3 p4 p6
-%double p1 p2 p3 p5
-intmax('uint64')
+clear
+clear global variable;
+
+syms x1 x2 x3 p4 p6 k
+
+
+%p1 p2 p3 p4 p6 x2val x3val eq matrix
+
 p1 = 8.4e-6;
 p2 = 6.6667e-4;
 p3 = 1.7778e-5;
@@ -24,77 +29,109 @@ det11 = subs(det11, x2, x2val);
 det21 = subs(det21, x2, x2val);
 
 res = det ( [det11 det12 det13; det21 det22 det23; det31 det32 det33] );
-res2 = det ( [det11 det12 det13; det21 det22 det23; det31 det32 det33] );
 
-eq = res2 == 0;
+eq = res == 0;
 
+%global fileID fileIDcheck fileIDplot1 fileIDplot2 fileIDplot3;
+
+fileIDplot3 = fopen('forplot3.txt', 'w');
 fileID = fopen('resulst.txt', 'w');
 fileIDcheck = fopen('check.txt', 'w');
+fileIDplot1 = fopen('forplot1.txt', 'w');
+fileIDplot2 = fopen('forplot2.txt', 'w');
 
-%for i = 1.0: 0.1: 2.0
-for i = 10.0: 1.0: 10.0
-    %p4 = i;
-   inner = subs(eq, p4, i);
-   x2tmp = subs(x2val, p4, i);
-   x3tmp = subs(x3val, p4, i);
-   p6tmp = subs(p6, p4, i);
-   check = subs(res, p4, i);
-   
-   fprintf(fileID, 'p4 = %f \n', i);
-   fprintf(fileIDcheck, '%f\n', i);
-   
-   %solution = sym(solve(inner, x1,'IgnoreProperties', true));
-   %solution = solve(res, x1);
-   solution = solve(inner, x1);
-   if (isempty(solution)==false)
-       x11 = solution(1, 1);
-       x12 = solution(2, 1);
-       x13 = solution(3, 1);
-       
-       
-       fprintf(fileID, 'x11 = %f x12 = %f \n', x11, x12);
-       if (isAlways(x11 > 0) == true)
-         x21 = subs(x2tmp, x1, x11);
-         x31 = subs(x3tmp, x1, x11);
-         p6res = subs(p6tmp, x1, x11);
-         p6res = subs(p6res, x2, x21);
-         p6res = subs(p6res, x3, x31);
-         fprintf(fileID, 'x21 = %f x31 = %f p6 = %f \n', x21, x31, p6res);
-         p6check = (8.4e-6 * x21 + x11 * x21 - 2 * x31) / 1.7778e-5 * i + x21;
-         
-         check1 = subs(check, x1, x11);
-         fprintf(fileIDcheck, '%f %f %f %f\n', x11, x21, x31, p6res);
-         
-       end
-       if (isAlways(x12 > 0))
-         x22 = subs(x2tmp, x1, x12);
-         x32 = subs(x3tmp, x1, x12);
-         p6res = subs(p6tmp, x1, x12);
-         p6res = subs(p6res, x2, x22);
-         p6res = subs(p6res, x3, x32);
-         fprintf(fileID, 'x22 = %f x32 = %f p6 = %f \n', x22, x32, p6res);
-         p6check = (8.4e-6 * x22 + x12 * x22 - 2 * x32) / 1.7778e-5 * i + x22;
-         
-         check2 = subs(check, x1, x12);
-         fprintf(fileID, 'check = %f \n', check2);
-         fprintf(fileIDcheck, '%f %f %f %f\n', x12, x22, x32, p6res);
-       end
-       if (isAlways(x13 > 0) == true)
-         x23 = subs(x2tmp, x1, x13);
-         x33 = subs(x3tmp, x1, x13);
-         p6res = subs(p6tmp, x1, x13);
-         p6res = subs(p6res, x2, x23);
-         p6res = subs(p6res, x3, x33);
-         fprintf(fileID, 'x23 = %f x33 = %f p6 = %f \n', x23, x33, p6res);
-         p6check = (8.4e-6 * x23 + x13 * x23 - 2 * x33) / 1.7778e-5 * i + x23;
-         
-         check3 = subs(check, x1, x13);
-         fprintf(fileID, 'check = %f \n', check3);
-         fprintf(fileIDcheck, '%f %f %f %f\n', x13, x23, x33, p6res);
-       end
-       fprintf(fileID, '\n');
-   end
-   
-   
+
+
+forrange(1.0, 2.0, 0.1);
+forrange(2.0, 10.0, 1.0);
+forrange(10.0, 100.0, 10.0);
+forrange(100.0, 1500.0, 100.0);
+
+%fclose(fileID);
+%fclose(fileIDcheck);
+%fclose(fileIDplot1);
+%fclose(fileIDplot2);
+%fclose(fileIDplot3);
+
+fid=fopen('forplot2.txt');
+s = textscan(fid,'%f %f','headerlines',23);
+fclose(fid);
+x=s{1};
+y=s{2};
+
+loglog(x, y);
+hold on;
+
+
+fid=fopen('forplot3.txt');
+s=textscan(fid,'%f %f');
+fclose(fid);
+x=s{1};
+y=s{2};
+
+loglog(x, y);
+hold off;
+
+%B = load('forplot2.txt');
+%C = load('forplot3.txt');
+
+%plot(B(:,1),B(:,2));
+%hold on;
+%plot(C(:,1),C(:,2));
+%hold off;
+
+function[x11, x12, x13, x2tmp, x3tmp, p6tmp] = subsp4(i)
+global p4 x1 eq x2val x3val p6;
+inner = subs(eq, p4, i);
+solution = solve(inner, x1);
+x11 = solution(1);
+x12 = solution(2);
+x13 = solution(3);
+
+x2tmp = subs(x2val, p4, i);
+x3tmp = subs(x3val, p4, i);
+p6tmp = subs(p6, p4, i);
 end
-fclose(fileID);
+
+function[p6res] = subsx1(x1in, x2tmp, x3tmp, p6tmp)
+global fileID fileIDcheck x1 x2 x3;
+if (isAlways(x1in > 0) == true)
+         x2in = subs(x2tmp, x1, x1in);
+         x3in = subs(x3tmp, x1, x1in);
+         p6res = subs(p6tmp, x1, x1in);
+         p6res = subs(p6res, x2, x2in);
+         p6res = subs(p6res, x3, x3in);
+         
+         fprintf(fileID, 'x21 = %e x31 = %e p6 = %e\n', x2in, x3in, p6res);
+         fprintf(fileIDcheck, '%e %e %e %e\n', x1in, x2in, x3in, p6res);
+         %fprintf(fileIDplot1, '%e %e \n', i, p6res);
+        
+else
+    p6res = -1;
+end
+end
+
+function [] = forrange(left, right, step)
+
+global fileIDcheck fileID fileIDplot1 fileIDplot2 fileIDplot3;
+for i = left: step: right
+   
+   fprintf(fileID, 'p4 = %e \n', i);
+   fprintf(fileIDcheck, '%e\n', i);
+   
+   [x11, x12, x13, x2tmp, x3tmp, p6tmp] = subsp4(i);
+   
+   fprintf(fileID, 'x11 = %e x12 = %e x13 = %e\n', x11, x12, x13);
+   
+   p6res = subsx1(x11, x2tmp, x3tmp, p6tmp);
+   fprintf(fileIDplot1, '%e %e \n', i, p6res);
+   
+   p6res = subsx1(x12, x2tmp, x3tmp, p6tmp);
+   fprintf(fileIDplot2, '%e %e \n', i, p6res);
+   
+   p6res = subsx1(x13, x2tmp, x3tmp, p6tmp);
+   fprintf(fileIDplot3, '%e %e \n', i, p6res);
+         
+   fprintf(fileID, '\n');
+end
+end
