@@ -9,13 +9,13 @@
 void fillRightPart(double h, std::vector<double>& y,
   std::vector<double>& b, double Q, double R)
 {
-  b[0] = - (y[1] - 2 * y[0] + Q - h * h * y[0] * y[0]  + h*h);
+  b[0] = - (y[1] - 2 * y[0] + Q - h * h * y[0] * y[0]  + h * h);
   int n = b.size();
   for (int i = 1; i < n; ++i)
   {
-    b[i] = - (y[i+1] - 2 * y[i] + y[i-1] - h*h* y[i] * y[i] + h*h);
+    b[i] = - (y[i+1] - 2 * y[i] + y[i-1] - h * h * y[i] * y[i] + h * h);
   }
-  b[n-1] = - (R - 2 * y[n - 1] + y[n-2] - h*h* y[n -1] * y[n-1] + h*h);
+  b[n-1] = - (R - 2 * y[n - 1] + y[n-2] - h * h * y[n -1] * y[n-1] + h * h);
 }
 void Jacoby(int n, double h, double* x, Matrix<double>& matrix)
 {
