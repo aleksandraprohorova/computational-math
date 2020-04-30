@@ -17,24 +17,22 @@ p3 = 1.7778e-5;
 p3opp = 177780;
 p5 = 2;
 
+eq2 = (-p1*x2 + x1*x2 - p5*x3 + p4 * p3 * (p6 - x2))*p3opp == 0;
+eq3 = (x1 - x3 - p4*x3) == 0;
+eq1 = (p1 * x2 - x1 * x2 + x1 - x1^2)*p2opp == 0;
+
 x2val = (x1 * x1 + p2 * p4 * x1 - x1) / (p1 - x1);
 x3val = x1 / (1 + p4);
-%p6 = (p1 * x2 + x1 * x2 - p5 * x3) / p3 * p4 + x2;
+p6 = (p1 * x2 + x1 * x2 - p5 * x3) / p3 * p4 + x2;
 
-det11 = -x2*p2opp + 1*p2opp - 2*x1*p2opp - p4;
-det12 = p1 * p2opp - x1 * p2opp;
-det13 = 0;
-det21 = -x2*p3opp;
-det22 = - p1 * p3opp - x1 * p3opp - p4;
-det23 = p5*p3opp;
-det31 = 1;
-det32 = 0;
-det33 = - 1 - p4;
+system = [eq1, eq2, eq3];
+x = [x1, x2, x3];
+res = jacobian(system, x);
 
-det11 = subs(det11, x2, x2val);
-det21 = subs(det21, x2, x2val);
+res = subs(res, x2, x2val);
+res = subs(res, x3, x3val);
 
-res = det ( [det11 det12 det13; det21 det22 det23; det31 det32 det33] );
+
 
 p6eq = (-p1*x2 + x1*x2 - p5*x3 + p4 * p3 * (p6 - x2))*p3opp == 0;
 
@@ -45,7 +43,7 @@ eq = res == 0;
 global fileID fileIDcheck fileIDplot1 fileIDplot2 fileIDplot3;
 
 fileIDplot3 = fopen('forplot3.txt', 'w');
-fileID = fopen('results_p6_auto.txt', 'w');
+fileID = fopen('results_jacobian.txt', 'w');
 fileIDcheck = fopen('check.txt', 'w');
 fileIDplot1 = fopen('forplot1.txt', 'w');
 fileIDplot2 = fopen('forplot2.txt', 'w');
@@ -122,11 +120,11 @@ if (isAlways(x1in > 0) == true)
          p6in = subs(p6in, x2, x2in);
          p6in = subs(p6in, x3, x3in);
          
-         p6res = solve(p6in, p6);
-         %p6res = p6in;
+         %p6res = solve(p6in, p6);
+         p6res = p6in;
          
-         fprintf(fileID, 'x2 = %e x3 = %e p6 = %e\n', x2in, x3in, p6res(1));
-         fprintf(fileIDcheck, '%e %e %e %e\n', x1in, x2in, x3in, p6res(1));
+         fprintf(fileID, 'x2 = %e x3 = %e p6 = %e\n', x2in, x3in, p6res);
+         fprintf(fileIDcheck, '%e %e %e %e\n', x1in, x2in, x3in, p6res);
          %fprintf(fileIDplot1, '%e %e \n', i, p6res);
         
 else
@@ -136,14 +134,14 @@ end
 
 function forrange(left, right, step)
 
-global fileIDcheck fileID fileIDplot1 fileIDplot2 fileIDplot3 p6 p6eq p4;
+global fileIDcheck fileID fileIDplot1 fileIDplot2 fileIDplot3 p6 p4;
 for i = left: step: right
 
    fprintf(fileID, 'p4 = %e \n', i);
    fprintf(fileIDcheck, '%e\n', i);
    
-   p6eqp4 = subs(p6eq, p4, i);
-   %p6eqp4 = subs(p6, p4, i);
+   %p6eqp4 = subs(p6eq, p4, i);
+   p6eqp4 = subs(p6, p4, i);
    
    [x11, x12, x13, x2tmp, x3tmp] = subsp4(i);
    

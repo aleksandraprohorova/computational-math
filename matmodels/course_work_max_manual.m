@@ -34,11 +34,10 @@ det33 = - 1 - p4;
 det11 = subs(det11, x2, x2val);
 det21 = subs(det21, x2, x2val);
 
-res = det ( [det11 det12 det13; det21 det22 det23; det31 det32 det33] );
+res = det11*det22*det33 + det12*det23*det31 + det21*det32*det13 - det13*det22*det31 - det12*det21*det33 - det23*det32*det11;
 
 p6eq = (-p1*x2 + x1*x2 - p5*x3 + p4 * p3 * (p6 - x2))*p3opp == 0;
 
-p6val = solve(p6eq, p6);
 
 eq = res == 0;
 
@@ -121,14 +120,14 @@ if (isAlways(x1in > 0) == true)
          p6in = subs(p6tmp, x1, x1in);
          p6in = subs(p6in, x2, x2in);
          p6in = subs(p6in, x3, x3in);
-         
+
          p6res = solve(p6in, p6);
          %p6res = p6in;
-         
+
          fprintf(fileID, 'x2 = %e x3 = %e p6 = %e\n', x2in, x3in, p6res(1));
          fprintf(fileIDcheck, '%e %e %e %e\n', x1in, x2in, x3in, p6res(1));
          %fprintf(fileIDplot1, '%e %e \n', i, p6res);
-        
+
 else
     p6res = -1;
 end
@@ -141,24 +140,24 @@ for i = left: step: right
 
    fprintf(fileID, 'p4 = %e \n', i);
    fprintf(fileIDcheck, '%e\n', i);
-   
+
    p6eqp4 = subs(p6eq, p4, i);
    %p6eqp4 = subs(p6, p4, i);
-   
+
    [x11, x12, x13, x2tmp, x3tmp] = subsp4(i);
-   
+
    fprintf(fileID, 'x1 = %e x1 = %e x1 = %e\n', x11, x12, x13);
-   
+
    p6res = subsx1(x11, x2tmp, x3tmp, p6eqp4);
-   
+
    fprintf(fileIDplot1, '%e %e \n', i, p6res);
-   
+
    p6res = subsx1(x12, x2tmp, x3tmp, p6eqp4);
    fprintf(fileIDplot2, '%e %e \n', i, p6res);
-   
+
    p6res = subsx1(x13, x2tmp, x3tmp, p6eqp4);
    fprintf(fileIDplot3, '%e %e \n', i, p6res);
-         
+
    fprintf(fileID, '\n');
 end
 end
